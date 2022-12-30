@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Left-Handed Guitar Tabs</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		html,body {
+			font-family: serif;
+			overflow-x: hidden;
+			padding:5px;
+		}
+		textarea {
+			border:1px solid #999999;
+			width:100%;
+			height:30vh;
+			margin:5px 0;
+			padding:3px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		#makelh {
+			width:100%;
+			padding:10px;
+		}
+		#chords {
+			position: absolute;
+			width: 100%;
+			max-width: 500px;
+			height: 100vh;
+			top: 0;
+			right: -550px;
+			background: #fff;
+			padding: 65px 10px 10px 10px;
+			transition: 0.1s;
+			box-shadow: 0px 0px 10px 1px #aaaaaa;
+		}
+		#chords img {
+			width:100%;
+		}
+		#chordsbutton {
+			width:30px;
+			height:30px;
+			position:absolute;
+			top:20px;
+			right:20px;
+			z-index:10;
+			cursor: pointer;
+		}
+		#chordsbutton img {
+			width:100%;
+		}
+		.chordson {
+			right:0!important;
+		}
+		#githublink {
+			width:30px;
+			height:30px;
+			position:absolute;
+			top:20px;
+			right:60px;
+			z-index:10;
+			cursor: pointer;
+		}
+		#githublink img {
+			width:100%;
+		}
+		#songs {
+			width:calc( 100% - 100px );
+		}
+	</style>
+</head>
+
+<body>
+
+<div id="githublink">
+	<img src="img/github-mark.png">
+</div>
+
+<div id="chordsbutton">
+	<img src="img/icon-chords.png">
+</div>
+
+<div id="chords">
+	<img src="img/left-handed-chords.png">
+</div>
+
+<div id="songs">
+	<button onclick="loadsong('adventuretime.txt')">Adventure Time</button>
+	<button onclick="loadsong('comeasyouare.txt')">Come As You Are</button>
+	<button onclick="loadsong('everlong.txt')">Everlong</button>
+	<button onclick="loadsong('gadda.txt')">In-A-Gadda-Da-Vida</button>
+	<button onclick="loadsong('introdiction.txt')">Introdiction</button>
+	<button onclick="loadsong('nothingelsematters.txt')">Nothing Else Matters</button>
+	<button onclick="loadsong('paintitblackintro.txt')">Paint It Black intro</button>
+	<button onclick="loadsong('risingsun.txt')">House Of The Rising Sun</button>
+	<button onclick="loadsong('sevennation.txt')">Seven Nation Army</button>
+	<button onclick="loadsong('stairway.txt')">Stairway To Heaven</button>
+	<button onclick="loadsong('teenspirit.txt')">Smells Like Teen Spirit</button>
+</div>
+
+<h1>Paste right-handed tabs here:</h1>
+<textarea id="tabs" name="tabs" rows="7" cols="50">
+Introdiction by Scroobius Pip Intro Tab
+
+e|--------------------------|
+B|--------------------------|
+G|----9-----9------9-----9--|
+D|-7-----9-----10-----9-----|
+A|--------------------------|
+E|--------------------------|
+</textarea>
+<br><br>
+<button id="makelh" onclick= "convertsong()">Make left-handed!</button>
+<br><br>
+<h1>Left-handed version</h1>
+<textarea id="lhtabs" name="lhtabs" rows="9" cols="50"></textarea>
+
+<!-- Using jquery to make loading text files easy -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+var lineBreak = "\n";
+
+function convertsong() {
+	// Get the text from the right-handed tabs textarea
+	let get = document.getElementById("tabs").value;
+	// Split that input into lines
+	var singlelines = get.split(lineBreak);
+	// Get the number of lines
+	var arrayLength = singlelines.length;
+	// Create an array to store the reversed tabs
+	var reversedtabs = [];
+	// Loop through the lines
+	for (var i = 0; i < arrayLength; i++) {
+		// If the line starts with a small e string, reverse order of the next six lines and add to the reversedtabs array
+	    if ( singlelines[i].startsWith('e|') ) {
+	    	reversedtabs.push(singlelines[i+5]);
+	    	reversedtabs.push(singlelines[i+4]);
+	    	reversedtabs.push(singlelines[i+3]);
+	    	reversedtabs.push(singlelines[i+2]);
+	    	reversedtabs.push(singlelines[i+1]);
+	    	reversedtabs.push(singlelines[i]);
+	    	i=i+5;
+	    } else {
+	    	// If it's not tabs just copy the line to the reversedtabs array
+	    	reversedtabs.push(singlelines[i]);
+	    }
+
+	}
+	// Print the reversed tabs
+	document.getElementById('lhtabs').value = reversedtabs.join(lineBreak);
+}
+
+// Function to load the text files containing tabs
+function loadsong(filename) {
+   $.ajax({
+       url : 'tabs/' + filename,
+       dataType: "text",
+       success : function (data) {
+           $("#tabs").text(data);
+		   convertsong();
+       }
+   });	
+}
+
+// Jquery function to add a class to the chords drawer so it slides on
+$('#chordsbutton').click(function() {
+	$("#chords").toggleClass("chordson");
+});
+
+// Convert the initial tabs of Introdiction by Scroobius Pip to left-handed
+convertsong();
+</script>
+
+</body>
+</html>
